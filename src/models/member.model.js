@@ -21,4 +21,4 @@ const memberSchema = new Schema({
 
 },{timestamps:true})
 
-export const Committee = mongoose.model("Committee", committeeSchema)
+export const Member = mongoose.model("Member", memberSchema)

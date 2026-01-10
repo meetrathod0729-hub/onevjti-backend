@@ -25,6 +25,8 @@ const generateAccessAndRefreshTokens = async (userId) => {
 const registerUser = asyncHandler(async(req, res) => {
     const {fullName, username, password, department, year, email} = req.body
 
+    console.log("Files::::", req.files)
+
     if (
         [fullName, email, username, password, year, department].some((field) => field?.trim() === "")
     ) {
@@ -41,9 +43,19 @@ const registerUser = asyncHandler(async(req, res) => {
 
 
     let avatarLocalPath;
-    if (req.files && Array.isArray(req.files.avatar) && req.files.avatar.length > 0) {
-        avatarLocalPath = req.files.avatar[0].path;
-    }
+
+if (
+  req.files &&
+  req.files.avatar &&
+  req.files.avatar.length > 0
+) {
+  avatarLocalPath = req.files.avatar[0].path;
+}
+
+    // let avatarLocalPath;
+    // if (req.files && Array.isArray(req.files.avatar) && req.files.avatar.length > 0) {
+    //     avatarLocalPath = req.files.avatar[0].path;
+    // }
 
     let avatar;
     if (avatarLocalPath) {
@@ -58,7 +70,7 @@ const registerUser = asyncHandler(async(req, res) => {
         email,
         department,
         year,
-        avatar: avatar?.url || ""
+        avatar: avatar?.secure_url || ""
     })
 
     const createdUser = await User.findById(user._id).select(
@@ -290,6 +302,7 @@ const updateAvatar = asyncHandler(async(req,res) => {
         new ApiResponse(200, {}, "Avatar Updated Successfully")
     )
 })
+
 
 export {
     registerUser,

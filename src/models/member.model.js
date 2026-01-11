@@ -4,10 +4,13 @@ const memberSchema = new Schema({
 
     user: {
         type: Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User",
+        required: true
     },
     role: {
         type: String,
+        enum: ["member", "core", "head"],
+        default: "member",
         required: true
     },
     joinedAt: {
@@ -16,7 +19,8 @@ const memberSchema = new Schema({
     },
     committee: {
         type: Schema.Types.ObjectId,
-        ref: "Committee"
+        ref: "Committee",
+        required: true
     }
 
 },{timestamps:true})

@@ -303,6 +303,10 @@ const updateAvatar = asyncHandler(async(req,res) => {
     )
 })
 
+const getUser = asyncHandler(async(req, res) => {
+    
+})
+
 
 export {
     registerUser,

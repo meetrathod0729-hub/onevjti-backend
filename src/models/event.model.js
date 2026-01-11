@@ -1,46 +1,74 @@
-import mongoose, {Schema} from "mongoose"
+import mongoose, { Schema } from "mongoose";
 
-const eventSchema = new Schema({
-
+const eventSchema = new Schema(
+  {
     createdBy: {
-        type: Schema.Types.ObjectId,
-        ref: "User"
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
+
     committee: {
-        type: Schema.Types.ObjectId,
-        ref:"Committee"
+      type: Schema.Types.ObjectId,
+      ref: "Committee",
+      required: true,
     },
+
     title: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 100,
     },
+
     description: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
+      trim: true,
     },
-    posterUrl: {
-        type: String,
-        required: true,
+
+    poster: {
+      type: String,
+      required: true,
     },
+
     registrationLink: {
-        type: String
+      type: String,
+      match: [/^https?:\/\/.+/, "Invalid registration URL"],
     },
+
     startDate: {
-        type: Date
+      type: Date,
+      required: true,
     },
+
     endDate: {
-        type: Date, 
-        required: false
+      type: Date,
     },
+
     location: {
-        type: String
+      type: String,
+      trim: true,
     },
+
     eventType: {
-        type: String
-    }
+      type: String,
+      enum: ["technical", "cultural", "workshop", "seminar", "sports"],
+      required: true,
+    },
 
+    status: {
+      type: String,
+      enum: ["upcoming", "ongoing", "completed", "cancelled"],
+      default: "upcoming",
+    },
 
+    isPublic: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  { timestamps: true }
+);
 
-},{timestamps: true})
-
-export const Event = mongoose.model("Event", eventSchema)
+export const Event = mongoose.model("Event", eventSchema);

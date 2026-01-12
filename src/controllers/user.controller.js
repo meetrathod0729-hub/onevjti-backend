@@ -4,6 +4,7 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
+import { Member } from "../models/member.model.js";
 import mongoose from "mongoose";
 
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -303,8 +304,50 @@ const updateAvatar = asyncHandler(async(req,res) => {
     )
 })
 
-const getUser = asyncHandler(async(req, res) => {
-    
+const searchUser = asyncHandler(async(req, res) => {
+    const {q} = req.query
+
+    if(!q || q.trim() === "") {
+        throw new ApiError(400, "Search Query is required")
+    }
+
+    const member = await Member.findOne({ user: req.user._id })
+
+    if(!member || !["head", "core"].includes(member.role)) {
+        throw new ApiError(403, "Not authorized to search users")
+    }
+
+    const users = await User.find({
+        _id: { $ne: req.user._id },
+        $or: [
+            {
+                username: {
+                    $regex: q, 
+                    $options: "i"
+                }
+            },
+            {
+                email: {
+                    $regex: q,
+                    $options: "i"
+                }
+            }
+        ]
+    })
+    .select("_id username email")
+    .limit(10)
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            users,
+            "Users fetched successfully"
+        )
+    )
+
+
 })
 
 
@@ -316,5 +359,6 @@ export {
     changeCurrentPassword,
     getCurrentUser,
     updateAccount,
-    updateAvatar
+    updateAvatar,
+    searchUser
 }

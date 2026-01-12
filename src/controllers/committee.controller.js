@@ -22,10 +22,24 @@ const createCommittee = asyncHandler(async(req, res) => {
         throw new ApiError(404, "User not found")
     }
 
+    const logoLocalPath = req.file?.path
+    let logoUrl
+
+    if(logoLocalPath) {
+        const logo = await uploadOnCloudinary(logoLocalPath)
+
+        if(!logo) {
+            throw new ApiError(400, "Logo upload failed")
+        }
+
+        logoUrl = logo.url
+
+    }
+
     const committee = await Committee.create({
         name,
         description,
-        // logo: logo?.url
+        logo: logoUrl
     })
 
     await Member.create({
@@ -45,6 +59,68 @@ const createCommittee = asyncHandler(async(req, res) => {
     )
 })
 
+const getAllCommittees = asyncHandler(async(req, res) => {
+    const committees = await Committee.find()
+    .select("name description logo")
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            committees,
+            "Committees fetched"
+        )
+    )
+})
+
+const updateCommittee = asyncHandler(async(req, res) => {
+    const {name, description, committeeId} = req.body
+
+    if(!name || !description) {
+        throw new ApiError(400, "All fields are required")
+    }
+
+    if(!committeeId) {
+        throw new ApiError(400, "Committee ID is required");
+    }
+
+    const logoLocalPath = req.file?.path
+    let logoUrl
+
+    if(logoLocalPath) {
+        const logo = await uploadOnCloudinary(newLogoLocalPath)
+
+        if(!logo) {
+            throw new ApiError(400, "Logo upload failed")
+        }
+
+        logoUrl = logo.url
+
+    }
+
+    const updateCommittee = await Committee.findByIdAndUpdate(
+        committeeId,
+        {
+            $set: {
+                name,
+                description,
+                logoUrl,
+            }
+        },
+        {
+            new: true
+        }
+    )
+
+    return res.status(200).json(
+        new ApiResponse(200, updatedCommittee, "Committee updated successfully")
+    );
+
+})
+
 export {
-    createCommittee
+    createCommittee,
+    getAllCommittees,
+    updateCommittee
 }

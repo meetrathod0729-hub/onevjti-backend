@@ -17,9 +17,13 @@ app.use(cookieParser())
 //routes import
 import userRouter from './routes/user.routes.js'
 import eventRouter from './routes/event.routes.js'
+import committeeRouter from './routes/committee.routes.js'
+import memberRouter from './routes/member.routes.js'
 
 //routes declaration
 app.use("/api/v1/users", userRouter)
 app.use("/api/v1/events", eventRouter)
+app.use("/api/v1/committees", committeeRouter)
+app.use("/api/v1/members", memberRouter)
 
 export { app }

@@ -6,22 +6,6 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
 
-// Event Controller Functions
-
-// createEvent(req, res)
-// updateEvent(req, res)
-// deleteEvent(req, res)
-// getEventById(req, res)
-// getAllEvents(req, res)
-// getEventsByCommittee(req, res)
-// searchEvents(req, res)
-// filterEvents(req, res)
-// getUpcomingEvents(req, res)
-// getPastEvents(req, res)
-// registerForEvent(req, res)
-// unregisterFromEvent(req, res)
-// getEventRegistrations(req, res)
-// getUserRegisteredEvents(req, res)
 
 const createEvent = asyncHandler(async(req, res) => {
     const {
@@ -91,7 +75,42 @@ const createEvent = asyncHandler(async(req, res) => {
     )
 })
 
+const getAllEvents = asyncHandler(async(req, res) => {
+
+    const {committee, eventType, upcoming} = req.query
+
+    const filter = {}
+
+    if(committee) {
+        filter.committee = committee
+    }
+
+    if(eventType) {
+        filter.eventType = eventType
+    }
+
+    if(upcoming == "true") {
+        filter.startDate = { $gte: new Date() }
+    }
+
+    const events = await Event.find(filter)
+    .populate("committee", "name logo")
+    .populate("createdBy", "username fullName")
+    .sort({ startDate: 1 })
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            events,
+            "Events fetched successfully"
+        )
+    );
+
+})
+
 
 export {
-    createEvent
+    createEvent,
+    getAllEvents,
+    getEventById
 }

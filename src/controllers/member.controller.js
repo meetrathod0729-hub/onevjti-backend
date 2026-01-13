@@ -140,11 +140,65 @@ const removeMember = asyncHandler(async (req, res) => {
     );
 });
 
+const updateMemberRole = asyncHandler(async(req,res) => {
+    const { memberId } = req.params
+    const { role } = req.body
+
+    if (!role || !["member", "core"].includes(role)) {
+        throw new ApiError(400, "Invalid role");
+    }
+
+    const requester = await Member.findOne({
+        user: req.user._id
+    })
+
+    if (!requester) {
+        throw new ApiError(403, "Not a committee member");
+    }
+
+    
+    if (requester.role !== "head") {
+        throw new ApiError(403, "Not authorized to update member roles");
+    }
+
+    const targetMember = await Member.findById(memberId);
+
+    if (!targetMember) {
+        throw new ApiError(404, "Member does not exist");
+    }
+
+    if (
+        targetMember.committee.toString() !==
+        requester.committee.toString()
+    ) {
+        throw new ApiError(403, "Unauthorized access");
+    }
+
+    if (targetMember.role === "head") {
+        throw new ApiError(400, "Cannot change head role");
+    }
+
+    targetMember.role = role
+    await targetMember.save()
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            targetMember,
+            "Member role updated successfully"
+        )
+    )
+
+})
 
 
 
 export {
     createMember,
     listCommitteeMembers,
-    removeMember
+    removeMember,
+    updateMemberRole
+
 }

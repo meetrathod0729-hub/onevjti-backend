@@ -1,14 +1,16 @@
 import { Router } from "express";
 import {upload} from "../middlewares/multer.middleware.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { registerUser,
+import { 
+    registerUser,
     loginUser,
     logoutUser,
     refreshAccessToken,
     changeCurrentPassword,
     getCurrentUser,
     updateAccount,
-    updateAvatar } from "../controllers/user.controller.js"
+    updateAvatar,
+    searchUser } from "../controllers/user.controller.js"
 
 
 const router = Router()
@@ -37,5 +39,7 @@ router.route("/current-user").get(verifyJWT, getCurrentUser)
 router.route("/update-account").patch(verifyJWT, updateAccount)
 
 router.route("/avatar").patch(verifyJWT, upload.single("avatar"), updateAvatar)
+
+router.route("/search").get(verifyJWT, searchUser)
 
 export default router

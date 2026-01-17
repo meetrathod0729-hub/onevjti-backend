@@ -1,6 +1,6 @@
-import { asyncHandler } from "../utils/asyncHandler";
-import { ApiError } from "../utils/ApiError";
-import { ApiResponse } from "../utils/ApiResponse";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 import { Achievement } from "../models/achievement.model.js";
 import { Member } from "../models/member.model.js";
 import { Committee } from "../models/committee.model.js";

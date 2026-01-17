@@ -7,11 +7,11 @@ dotenv.config({
     path: './.env'
 })
 
-console.log("Cloudinary ENV:", {
-  cloud: process.env.CLOUDINARY_CLOUD_NAME,
-  key: process.env.CLOUDINARY_API_KEY,
-  secret: process.env.CLOUDINARY_API_SECRET ? "LOADED" : "MISSING"
-});
+// console.log("Cloudinary ENV:", {
+//   cloud: process.env.CLOUDINARY_CLOUD_NAME,
+//   key: process.env.CLOUDINARY_API_KEY,
+//   secret: process.env.CLOUDINARY_API_SECRET ? "LOADED" : "MISSING"
+// });
 
 
 connectDB()

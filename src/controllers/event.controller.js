@@ -41,15 +41,18 @@ const createEvent = asyncHandler(async(req, res) => {
             ? req.files.poster[0].path
             : null;
 
-    if(posterLocalPath) {
-        const poster = await uploadOnCloudinary(posterLocalPath)
-    
-        if(!poster) {
-            throw new ApiError(400, "Poster upload failed");
-        }
-        poster = poster.url
+    let posterUrl;
 
+    if (posterLocalPath) {
+    const uploadedPoster = await uploadOnCloudinary(posterLocalPath);
+
+    if (!uploadedPoster) {
+        throw new ApiError(400, "Poster upload failed");
     }
+
+    posterUrl = uploadedPoster.url;
+    }
+
 
 
     const event = await Event.create({
@@ -60,6 +63,7 @@ const createEvent = asyncHandler(async(req, res) => {
         eventType,
         startDate,
         endDate,
+        poster: posterUrl,
         createdBy: req.user._id,
         committee,
     })

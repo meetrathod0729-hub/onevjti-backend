@@ -21,7 +21,7 @@ Postman Docs: https://aashaykk-9007561.postman.co/workspace/Aashay-Kamble's-Work
 
 ## How to setup
 ```bash
-git clone https://github.com/aashaykk/onevjti-backend.git
+git clone https://github.com/your-username/onevjti-backend.git
 cd onevjti-backend
 npm install
 ```
